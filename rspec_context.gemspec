@@ -6,7 +6,7 @@ require 'rspec_context/version'
 
 Gem::Specification.new do |spec|
   spec.name          = 'rspec_context'
-  spec.version       = RspecContext::VERSION
+  spec.version       = RSpecContext::VERSION
   spec.authors       = ['alpaca-tc']
   spec.email         = ['alpaca-tc@alpaca.tc']
 
