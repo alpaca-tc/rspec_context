@@ -7,4 +7,5 @@ gemspec
 
 gem 'pry'
 gem 'guard'
+gem 'guard-rubocop'
 gem 'guard-rspec'

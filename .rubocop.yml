@@ -1,0 +1,66 @@
+AllCops:
+  Exclude:
+    - '.bundle'
+    - '*.gemspec'
+    - 'spec/fixtures/**/*'
+  TargetRubyVersion: 2.4
+  DisplayCopNames: true
+
+Metrics/LineLength:
+  Max: 150
+Metrics/ClassLength:
+  Max: 300
+Metrics/BlockNesting:
+  Max: 4
+Metrics/MethodLength:
+  Max: 50
+Metrics/BlockLength:
+  Enabled: false
+Metrics/ModuleLength:
+  Max: 300
+Metrics/AbcSize:
+  Max: 29
+Metrics/CyclomaticComplexity:
+  MAX: 10
+Style/BlockDelimiters:
+  Enabled: false
+Style/Lambda:
+  Enabled: false
+Style/Documentation:
+  Enabled: false
+Layout/MultilineOperationIndentation:
+  Enabled: false
+Style/PredicateName:
+  Enabled: false
+Style/BlockDelimiters:
+  Enabled: false
+Style/DoubleNegation:
+  Enabled: false
+Bundler/OrderedGems:
+  Enabled: false
+Style/GuardClause:
+  Enabled: false
+Layout/AlignParameters:
+  EnforcedStyle: with_fixed_indentation
+Layout/MultilineMethodCallIndentation:
+  EnforcedStyle: indented
+Style/NumericPredicate:
+  Enabled: false
+Lint/AmbiguousBlockAssociation:
+  Enabled: false
+Style/ClassAndModuleChildren:
+  Enabled: false
+Style/SpecialGlobalVars:
+  Enabled: false
+# Lint/AmbiguousRegexpLiteral:
+#   Enabled: false
+Lint/AssignmentInCondition:
+  Enabled: false
+Performance:
+  Enabled: false
+
+Style/AsciiComments:
+  Enabled: false
+
+Lint/RescueWithoutErrorClass:
+  Enabled: false
