@@ -1,5 +1,7 @@
-require "bundler/setup"
-require "rspec_context"
+# frozen_string_literal: true
+
+require 'bundler/setup'
+require 'rspec_context'
 require 'rspec_context'
 require 'pry' unless ENV['CI']
 
