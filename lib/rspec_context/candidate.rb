@@ -2,8 +2,36 @@ require 'ripper'
 
 module RSpecContext
   class Candidate
-    class CleanRoom < BasicObject
-      def self.method_missing(*); end
+    module CleanRoom
+      def method_missing(*); end
+
+      def const_missing(name)
+        if name == :RSpec
+          self
+        else
+          ::Class.new.tap do |klass|
+            klass.extend(LikeString)
+            klass.extend(CleanRoom)
+            klass.__name = name
+
+            const_set(name, klass)
+          end
+        end
+      end
+    end
+
+    module LikeString
+      def __name=(name)
+        @__name = name
+      end
+
+      def to_s
+        @__name.to_s
+      end
+
+      def inspect
+        to_s
+      end
     end
 
     attr_reader :spec_file, :type, :method_name, :line
@@ -31,7 +59,8 @@ module RSpecContext
     end
 
     def arguments
-      @arguments ||= arguments_extractor.tap { |klass| klass.class_eval(raw_body.join("\n")) }.instance_variable_get(:@__args)
+      @arguments ||= arguments_extractor.tap { |klass| klass.class_eval(raw_body.join("\n")) }.instance_variable_get(:@__args) || []
+      binding.pry;
     end
 
     def range
@@ -45,7 +74,9 @@ module RSpecContext
     private
 
     def arguments_extractor
-      @arguments_extractor ||= Class.new(CleanRoom).tap do |klass|
+      @arguments_extractor ||= Class.new.tap do |klass|
+        klass.extend(CleanRoom)
+
         klass.class_eval(<<-METHOD, __FILE__, __LINE__ + 1)
           def self.#{@method_name}(*args)
             @__args ||= args

@@ -8,8 +8,17 @@ RSpec.describe RSpecContext::Candidate do
     let(:file_path) { fixtures_path.join('files/client.rb') }
 
     describe '#name' do
-      subject { instance.name }
-      it { is_expected.to eq('#run') }
+      context 'given 9 as line' do
+        subject { instance.name }
+        it { is_expected.to eq('#run') }
+      end
+
+      fcontext 'given 4 as line' do
+        subject { instance.name }
+        let(:line) { 4 }
+        it { binding.pry; }
+        it { is_expected.to eq('LanguageServerRails::Client') }
+      end
     end
 
     describe '#cover?' do
