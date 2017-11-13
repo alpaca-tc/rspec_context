@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module RSpecContext
   class NodeBuilder
     def initialize(rspec_methods)

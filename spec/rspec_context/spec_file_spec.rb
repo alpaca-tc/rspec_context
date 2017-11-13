@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.describe RSpecContext::SpecFile do
   describe 'InstanceMethods' do
     let(:instance) { described_class.new(file_path) }

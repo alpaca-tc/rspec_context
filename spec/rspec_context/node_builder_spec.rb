@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.describe RSpecContext::NodeBuilder do
   def build_rspec_method(range:)
     RSpecContext::RSpecMethod.new(spec_file, :example_method, range.begin).tap do |instance|

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module RSpecContext
   # rubocop:disable Style/MethodMissing
   module CleanRoom
