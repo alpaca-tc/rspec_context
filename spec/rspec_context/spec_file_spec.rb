@@ -12,5 +12,10 @@ RSpec.describe RSpecContext::SpecFile do
       subject { instance.nodes }
       it { is_expected.to be_a(Array).and(all(be_a(RSpecContext::Node))) }
     end
+
+    describe '#contexts' do
+      subject { instance.contexts }
+      it { is_expected.to be_a(Array).and(all(be_a(RSpecContext::Context))) }
+    end
   end
 end

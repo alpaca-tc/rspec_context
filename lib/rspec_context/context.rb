@@ -1,34 +1,55 @@
 # frozen_string_literal: true
 
+require 'json'
+
 module RSpecContext
   class Context
-    class << self
-      def from_rspec_method(spec_file, rspec_method)
-        binding.pry
-        nested_rspec_methods = spec_file.rspec_methods.each { |_rspec_method| _rspec_method.cover?(rspec_method) && _rspec_method != rspec_method }
-        nested_rspec_methods.sort_by! { |_rspec_method| _rspec_method.range.begin }
+    attr_reader :node
 
-        new(spec_file, rspec_method, nested_rspec_methods)
-      end
+    def initialize(node)
+      @node = node
     end
 
-    attr_reader :spec_file, :rspec_method, :nested_rspec_methods
-
-    def initialize(spec_file, rspec_method, nested_rspec_methods)
-      @spec_file = spec_file
-      @rspec_method = rspec_method
-      @nested_rspec_methods = nested_rspec_methods
-    end
-
+    # rubocop:disable all
     def to_context_hash
-      binding.pry
-      # {
-      #   it: [1],
-      #   before: [1, 1],
-      #   context: [1],
-      #   describe: [1],
-      #   let: [1, 1, 1, 1]
-      # }
+      parent_node = node
+
+      example_group_methods = []
+      include_contexts = []
+      shared_group_methods = {}
+      example_methods = []
+      memorize_methods = {}
+
+      while parent_node
+        case parent_node.rspec_method.type
+        when :example_group_method
+          example_group_methods.unshift(parent_node.to_h)
+        when :example_method
+          example_methods.unshift(parent_node.to_h)
+        end
+
+        parent_node.children.each do |child_node|
+          case child_node.rspec_method.type
+          when :memorized_method
+            memorize_methods[child_node.rspec_method.name] ||= child_node.to_h
+          when :shared_group_method
+            shared_group_methods[child_node.rspec_method.name] ||= child_node.to_h
+          when :include_context
+            include_contexts.unshift(child_node.to_h)
+          end
+        end
+
+        parent_node = parent_node.parent
+      end
+
+      {
+        example_group_methods: example_group_methods,
+        include_contexts: include_contexts,
+        shared_group_methods: shared_group_methods,
+        example_methods: example_methods,
+        memorize_methods: memorize_methods
+      }
     end
+    # rubocop:enable all
   end
 end

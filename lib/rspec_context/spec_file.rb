@@ -10,6 +10,10 @@ module RSpecContext
       @content ||= File.read(@file_path).split("\n")
     end
 
+    def contexts
+      @contexts ||= nodes.map { |node| Context.new(node) }
+    end
+
     def nodes
       @nodes ||= NodeBuilder.new(rspec_methods).build_nodes
     end

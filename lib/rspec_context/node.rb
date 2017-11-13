@@ -17,5 +17,11 @@ module RSpecContext
     def top_node?
       parent.nil?
     end
+
+    def to_h
+      {
+        rspec_method: rspec_method.to_h
+      }
+    end
   end
 end

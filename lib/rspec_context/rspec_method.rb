@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'ripper'
-
 module RSpecContext
   class RSpecMethod
     EXAMPLE_GROUP_METHODS = %i[
@@ -117,6 +115,22 @@ module RSpecContext
 
     def broken?
       @broken
+    end
+
+    def inspect
+      %{#<#{self.class} #{method_name}(#{name}) #{range}>}
+    end
+
+    def to_h
+      {
+        name: name,
+        arguments: arguments,
+        method_name: method_name,
+        type: type,
+        begin: range.begin,
+        end: range.end,
+        broken: broken?
+      }
     end
 
     private
