@@ -50,14 +50,20 @@ module RSpecContext
     ]
 
     def self.parse_spec_file(spec_file)
-      new(spec_file).parse
+      instance = new(spec_file)
+      instance.build_nodes(instance.parse_candidates)
     end
 
     def initialize(spec_file)
       @spec_file = spec_file
     end
 
-    def parse
+    def build_nodes(candidates)
+      candidates = parse_candidates
+      binding.pry;
+    end
+
+    def parse_candidates
       rspec_methods = EXAMPLE_GROUP_METHODS + EXAMPLE_METHODS + INCLUDE_CONTEXT_METHODS + SHARED_GROUP_METHODS + MEMORIZED_METHODS
       filter = /^\s*(?<rspec_prefix>RSpec\.)?(?<method_name>#{rspec_methods.join('|')})/
 
