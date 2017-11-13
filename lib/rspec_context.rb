@@ -4,6 +4,7 @@ require 'rspec_context/version'
 
 module RSpecContext
   require 'rspec_context/context'
+  require 'rspec_context/cli'
   require 'rspec_context/clean_room'
   require 'rspec_context/ruby_compiler'
   require 'rspec_context/node'
