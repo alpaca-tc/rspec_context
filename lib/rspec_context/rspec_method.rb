@@ -73,7 +73,7 @@ module RSpecContext
       end
     }.freeze
 
-    attr_reader :spec_file, :type, :method_name, :line_no, :rspec_prefix
+    attr_reader :spec_file, :method_name, :line_no, :rspec_prefix
 
     def initialize(spec_file, method_name, line_no, rspec_prefix: false)
       @spec_file = spec_file
