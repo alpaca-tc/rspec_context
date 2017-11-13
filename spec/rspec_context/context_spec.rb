@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.describe RSpecContext::Context do
   describe 'ClassMethods' do
     describe '.from_candidate' do

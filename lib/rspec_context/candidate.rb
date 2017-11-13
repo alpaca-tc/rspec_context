@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'ripper'
 
 module RSpecContext
@@ -70,7 +72,7 @@ module RSpecContext
       end
     end
 
-    def extract_name(string)
+    def extract_name(_string)
       /^\s*#{type}/
     end
 

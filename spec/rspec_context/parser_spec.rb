@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.describe RSpecContext::Parser do
   describe '.parse_spec_file' do
     subject { described_class.parse_spec_file(spec_file) }

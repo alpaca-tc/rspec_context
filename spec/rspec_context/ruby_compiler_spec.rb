@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.describe RSpecContext::RubyCompiler do
   describe 'ClassMethods' do
     describe '.can_compile?' do

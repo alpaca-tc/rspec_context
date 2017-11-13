@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.describe RSpecContext::Candidate do
   describe 'InstanceMethods' do
     let(:instance) { described_class.new(spec_file, type, method_name, line, rspec_prefix: rspec_prefix?) }

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module RSpecContext
   class SpecFile
     def initialize(file_path)

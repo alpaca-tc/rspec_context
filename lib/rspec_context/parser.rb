@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module RSpecContext
   class Parser
     EXAMPLE_GROUP_METHODS = %i[
@@ -14,17 +16,17 @@ module RSpecContext
       specify
       fspecify
       xspecify
-    ]
+    ].freeze
 
     INCLUDE_CONTEXT_METHODS = %i[
       include_context
       include_examples
-    ]
+    ].freeze
 
     SHARED_GROUP_METHODS = %i[
       it_behaves_like
       it_should_behave_like
-    ]
+    ].freeze
 
     EXAMPLE_METHODS = %i[
       example
@@ -41,13 +43,13 @@ module RSpecContext
 
       skip
       pending
-    ]
+    ].freeze
 
     MEMORIZED_METHODS = %i[
       subject
       let
       let!
-    ]
+    ].freeze
 
     def self.parse_spec_file(spec_file)
       instance = new(spec_file)
@@ -58,9 +60,9 @@ module RSpecContext
       @spec_file = spec_file
     end
 
-    def build_nodes(candidates)
+    def build_nodes(_candidates)
       candidates = parse_candidates
-      binding.pry;
+      binding.pry
     end
 
     def parse_candidates

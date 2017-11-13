@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module RSpecContext
   class Contexts
     attr_reader :spec_file

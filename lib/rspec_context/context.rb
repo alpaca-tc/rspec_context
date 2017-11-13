@@ -1,8 +1,10 @@
+# frozen_string_literal: true
+
 module RSpecContext
   class Context
     class << self
       def from_candidate(spec_file, candidate)
-        binding.pry;
+        binding.pry
         nested_candidates = spec_file.candidates.each { |_candidate| _candidate.cover?(candidate) && _candidate != candidate }
         nested_candidates.sort_by! { |_candidate| _candidate.range.begin }
 
@@ -19,7 +21,7 @@ module RSpecContext
     end
 
     def to_context_hash
-      binding.pry;
+      binding.pry
       # {
       #   it: [1],
       #   before: [1, 1],

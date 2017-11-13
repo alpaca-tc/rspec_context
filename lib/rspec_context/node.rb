@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module RspecContext
   class Node
     attr_accessor :candidate, :parent, :children
