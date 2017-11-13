@@ -9,5 +9,13 @@ module RSpecContext
       @parent = parent
       @children = children
     end
+
+    def context
+      @context ||= Context.new(self)
+    end
+
+    def top_node?
+      parent.nil?
+    end
   end
 end

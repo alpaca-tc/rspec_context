@@ -26,13 +26,7 @@ module RSpecContext
         node.children = children.sort_by { |child_node| child_node.rspec_method.line_no }
       end
 
-      select_top_nodes(nodes)
-    end
-
-    private
-
-    def select_top_nodes(nodes)
-      nodes.select { |node| node.parent.nil? }
+      nodes
     end
   end
 end

@@ -24,7 +24,7 @@ RSpec.describe RSpecContext::NodeBuilder do
     it { is_expected.to all(be_a(RSpecContext::Node)) }
 
     it 'build nodes' do
-      node = subject.pop
+      node = subject.find(&:top_node?)
 
       expect(node.rspec_method).to eq(rspec_methods[0])
       expect(node.children[0].rspec_method).to eq(rspec_methods[1])
