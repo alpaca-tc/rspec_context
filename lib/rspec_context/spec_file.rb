@@ -14,8 +14,8 @@ module RSpecContext
       @contexts ||= Contexts.from_spec_file(self)
     end
 
-    def candidates
-      @candidates ||= Parser.parse_spec_file(self)
+    def rspec_methods
+      @rspec_methods ||= Parser.parse_spec_file(self)
     end
 
     def inspect

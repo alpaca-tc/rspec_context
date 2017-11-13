@@ -53,35 +53,54 @@ module RSpecContext
 
     def self.parse_spec_file(spec_file)
       instance = new(spec_file)
-      instance.build_nodes(instance.parse_candidates)
+      instance.build_nodes(instance.parse_rspec_methods)
     end
 
     def initialize(spec_file)
       @spec_file = spec_file
     end
 
-    def build_nodes(_candidates)
-      candidates = parse_candidates
-      binding.pry
+    def build_nodes(rspec_methods)
+      ancending = rspec_methods.sort_by(&:line_no)
+      nodes = ancending.map { |rspec_method| Node.new(rspec_method) }
+
+      nodes.each do |node|
+        children = nodes.select { |child_node| node.rspec_method.cover?(child_node.rspec_method) && node != child_node }
+
+        children.each do |child_node|
+          next if !child_node.parent.nil? && node.rspec_method.line_no < child_node.parent.rspec_method.line_no
+          child_node.parent = node
+        end
+      end
+
+      by_parent = nodes.group_by(&:parent)
+      nodes.each do |node|
+        children = by_parent[node]
+        next unless children
+
+        node.children = children.sort_by { |child_node| child_node.rspec_method.line_no }
+      end
+
+      nodes.select { |node| node.parent.nil? }
     end
 
-    def parse_candidates
+    def parse_rspec_methods
       rspec_methods = EXAMPLE_GROUP_METHODS + EXAMPLE_METHODS + INCLUDE_CONTEXT_METHODS + SHARED_GROUP_METHODS + MEMORIZED_METHODS
       filter = /^\s*(?<rspec_prefix>RSpec\.)?(?<method_name>#{rspec_methods.join('|')})/
 
-      candidates = []
+      rspec_methods = []
       @spec_file.content_lines.each_with_index do |line, line_no|
         next unless line.match(filter)
 
-        rspec_prefix = Regexp.last_match[:method_name].nil?
+        rspec_prefix = !Regexp.last_match[:method_name].nil?
         method_name = Regexp.last_match[:method_name]
         type = find_type(method_name)
 
-        candidate = Candidate.new(@spec_file, type, method_name, line_no, rspec_prefix: rspec_prefix)
-        candidates.push(candidate)
+        rspec_method = RSpecMethod.new(@spec_file, type, method_name, line_no, rspec_prefix: rspec_prefix)
+        rspec_methods.push(rspec_method)
       end
 
-      candidates
+      rspec_methods
     end
 
     private

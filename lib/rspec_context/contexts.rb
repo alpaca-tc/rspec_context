@@ -6,8 +6,8 @@ module RSpecContext
 
     class << self
       def from_spec_file(spec_file)
-        contexts = spec_file.candidates.map do |candidate|
-          Context.from_candidate(spec_file, candidate)
+        contexts = spec_file.rspec_methods.map do |rspec_method|
+          Context.from_rspec_method(spec_file, rspec_method)
         end
 
         new(spec_file, contexts)

@@ -3,7 +3,7 @@
 require 'ripper'
 
 module RSpecContext
-  class Candidate
+  class RSpecMethod
     # rubocop:disable Style/MethodMissing
     module CleanRoom
       def method_missing(*)
@@ -37,15 +37,11 @@ module RSpecContext
       arguments[0]
     end
 
-    def strip_body
+    def source
       indent = @spec_file.content_lines[line_no].match(/^\s*/)[0].length
       indent_remover = /^\s{#{indent}}/
 
       raw_body.map { |line| line.gsub(indent_remover, '') }.join("\n")
-    end
-
-    def raw_body
-      @spec_file.content_lines[range]
     end
 
     def arguments
@@ -61,6 +57,10 @@ module RSpecContext
     end
 
     private
+
+    def raw_body
+      @spec_file.content_lines[range]
+    end
 
     def arguments_extractor
       @arguments_extractor ||= Class.new.tap do |klass|

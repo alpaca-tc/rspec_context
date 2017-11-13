@@ -9,5 +9,5 @@ module RSpecContext
   require 'rspec_context/node'
   require 'rspec_context/parser'
   require 'rspec_context/spec_file'
-  require 'rspec_context/candidate'
+  require 'rspec_context/rspec_method'
 end

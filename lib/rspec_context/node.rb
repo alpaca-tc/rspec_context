@@ -1,11 +1,11 @@
 # frozen_string_literal: true
 
-module RspecContext
+module RSpecContext
   class Node
-    attr_accessor :candidate, :parent, :children
+    attr_accessor :rspec_method, :parent, :children
 
-    def initialize(candidate, parent: nil, children: [])
-      @candidate = candidate
+    def initialize(rspec_method, parent: nil, children: [])
+      @rspec_method = rspec_method
       @parent = parent
       @children = children
     end

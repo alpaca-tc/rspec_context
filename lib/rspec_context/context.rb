@@ -3,21 +3,21 @@
 module RSpecContext
   class Context
     class << self
-      def from_candidate(spec_file, candidate)
+      def from_rspec_method(spec_file, rspec_method)
         binding.pry
-        nested_candidates = spec_file.candidates.each { |_candidate| _candidate.cover?(candidate) && _candidate != candidate }
-        nested_candidates.sort_by! { |_candidate| _candidate.range.begin }
+        nested_rspec_methods = spec_file.rspec_methods.each { |_rspec_method| _rspec_method.cover?(rspec_method) && _rspec_method != rspec_method }
+        nested_rspec_methods.sort_by! { |_rspec_method| _rspec_method.range.begin }
 
-        new(spec_file, candidate, nested_candidates)
+        new(spec_file, rspec_method, nested_rspec_methods)
       end
     end
 
-    attr_reader :spec_file, :candidate, :nested_candidates
+    attr_reader :spec_file, :rspec_method, :nested_rspec_methods
 
-    def initialize(spec_file, candidate, nested_candidates)
+    def initialize(spec_file, rspec_method, nested_rspec_methods)
       @spec_file = spec_file
-      @candidate = candidate
-      @nested_candidates = nested_candidates
+      @rspec_method = rspec_method
+      @nested_rspec_methods = nested_rspec_methods
     end
 
     def to_context_hash
