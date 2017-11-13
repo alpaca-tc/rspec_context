@@ -43,3 +43,7 @@ RSpec.describe LanguageServerRails::Client do
     end
   end
 end
+
+RSpec.describe '#broken' do
+  broken d o '
+end
