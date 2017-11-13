@@ -4,8 +4,11 @@ require 'ripper'
 
 module RSpecContext
   class Candidate
+    # rubocop:disable Style/MethodMissing
     module CleanRoom
-      def method_missing(*); end
+      def method_missing(*)
+        self
+      end
 
       def const_missing(name)
         ::Class.new.tap do |klass|
@@ -18,14 +21,15 @@ module RSpecContext
         end
       end
     end
+    # rubocop:enable Style/MethodMissing
 
-    attr_reader :spec_file, :type, :method_name, :line, :rspec_prefix
+    attr_reader :spec_file, :type, :method_name, :line_no, :rspec_prefix
 
-    def initialize(spec_file, type, method_name, line, rspec_prefix: false)
+    def initialize(spec_file, type, method_name, line_no, rspec_prefix: false)
       @spec_file = spec_file
       @method_name = method_name
       @type = type
-      @line = line
+      @line_no = line_no
       @rspec_prefix = rspec_prefix
     end
 
@@ -34,10 +38,10 @@ module RSpecContext
     end
 
     def strip_body
-      indent = @spec_file.content_lines[line].match(/^\s*/)[0].length
+      indent = @spec_file.content_lines[line_no].match(/^\s*/)[0].length
       indent_remover = /^\s{#{indent}}/
 
-      raw_body.map { |_line| _line.gsub(indent_remover, '') }.join("\n")
+      raw_body.map { |line| line.gsub(indent_remover, '') }.join("\n")
     end
 
     def raw_body
@@ -49,7 +53,7 @@ module RSpecContext
     end
 
     def range
-      @range ||= Range.new(line, end_line, false)
+      @range ||= Range.new(line_no, end_line_no, false)
     end
 
     def cover?(other)
@@ -76,13 +80,13 @@ module RSpecContext
       /^\s*#{type}/
     end
 
-    def end_line
-      current_line = line
+    def end_line_no
+      current_line_no = line_no
 
-      while current_line < @spec_file.content_lines.length
-        script = @spec_file.content_lines[line..current_line].join("\n")
-        return current_line if RubyCompiler.can_compile?(script)
-        current_line += 1
+      while current_line_no < @spec_file.content_lines.length
+        script = @spec_file.content_lines[line_no..current_line_no].join("\n")
+        return current_line_no if RubyCompiler.can_compile?(script)
+        current_line_no += 1
       end
     end
   end
