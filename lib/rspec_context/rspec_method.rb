@@ -4,12 +4,82 @@ require 'ripper'
 
 module RSpecContext
   class RSpecMethod
+    EXAMPLE_GROUP_METHODS = %i[
+      example_group
+      describe
+      context
+
+      fdescribe
+      xdescribe
+
+      fcontext
+      xcontext
+
+      specify
+      fspecify
+      xspecify
+    ].freeze
+
+    INCLUDE_CONTEXT_METHODS = %i[
+      include_context
+      include_examples
+    ].freeze
+
+    SHARED_GROUP_METHODS = %i[
+      it_behaves_like
+      it_should_behave_like
+    ].freeze
+
+    EXAMPLE_METHODS = %i[
+      example
+      it
+      specify
+
+      fexample
+      fit
+      fspecify
+
+      xexample
+      xit
+      xspecify
+
+      skip
+      pending
+    ].freeze
+
+    MEMORIZED_METHODS = %i[
+      subject
+      let
+      let!
+    ].freeze
+
+    METHOD_TYPE_MAP = {}.tap { |map|
+      EXAMPLE_GROUP_METHODS.each do |method_name|
+        map[method_name] = :example_group_method
+      end
+
+      INCLUDE_CONTEXT_METHODS.each do |method_name|
+        map[method_name] = :include_context
+      end
+
+      SHARED_GROUP_METHODS.each do |method_name|
+        map[method_name] = :shared_group_method
+      end
+
+      EXAMPLE_METHODS.each do |method_name|
+        map[method_name] = :example_method
+      end
+
+      MEMORIZED_METHODS.each do |method_name|
+        map[method_name] = :memorized_method
+      end
+    }.freeze
+
     attr_reader :spec_file, :type, :method_name, :line_no, :rspec_prefix
 
-    def initialize(spec_file, type, method_name, line_no, rspec_prefix: false)
+    def initialize(spec_file, method_name, line_no, rspec_prefix: false)
       @spec_file = spec_file
       @method_name = method_name
-      @type = type
       @line_no = line_no
       @rspec_prefix = rspec_prefix
 
@@ -39,6 +109,10 @@ module RSpecContext
 
     def cover?(other)
       range.begin <= other.range.begin && other.range.end <= range.end
+    end
+
+    def type
+      METHOD_TYPE_MAP[method_name.to_sym]
     end
 
     def broken?

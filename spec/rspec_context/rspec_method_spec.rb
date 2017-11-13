@@ -2,9 +2,8 @@
 
 RSpec.describe RSpecContext::RSpecMethod do
   describe 'InstanceMethods' do
-    let(:instance) { described_class.new(spec_file, type, method_name, line, rspec_prefix: rspec_prefix?) }
+    let(:instance) { described_class.new(spec_file, method_name, line, rspec_prefix: rspec_prefix?) }
     let(:method_name) { 'describe' }
-    let(:type) { :example_group_method }
     let(:line) { 9 }
     let(:spec_file) { RSpecContext::SpecFile.new(file_path) }
     let(:file_path) { fixtures_path.join('files/client.rb') }
@@ -49,9 +48,18 @@ RSpec.describe RSpecContext::RSpecMethod do
       it { is_expected.to eq(['#run']) }
     end
 
+    describe '#type' do
+      subject { instance.type }
+
+      context 'method_name is :let' do
+        let(:method_name) { :let }
+        it { is_expected.to eq(:memorized_method) }
+      end
+    end
+
     describe '#cover?' do
       subject { instance.cover?(other) }
-      let(:other) { described_class.new(spec_file, type, method_name, line) }
+      let(:other) { described_class.new(spec_file, method_name, line) }
 
       before do
         instance.instance_variable_set(:@range, 1..10)
