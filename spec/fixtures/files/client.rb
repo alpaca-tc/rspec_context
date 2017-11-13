@@ -8,7 +8,7 @@ RSpec.describe LanguageServerRails::Client do
   let(:project_root) { __dir__ }
 
   describe '#run' do
-    def subject
+    subject do
       instance.run(id: 1, command: 'eval', script: 'Object.constants')
     end
 

@@ -10,6 +10,10 @@ module RSpecContext
       @node = node
     end
 
+    def tree
+      node.to_h
+    end
+
     # rubocop:disable all
     def to_context_hash
       parent_node = node

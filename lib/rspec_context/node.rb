@@ -20,7 +20,8 @@ module RSpecContext
 
     def to_h
       {
-        rspec_method: rspec_method.to_h
+        rspec_method: rspec_method.to_h,
+        children: children.map(&:to_h)
       }
     end
   end
