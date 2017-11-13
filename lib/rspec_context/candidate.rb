@@ -2,17 +2,29 @@ require 'ripper'
 
 module RSpecContext
   class Candidate
-    class CleanRoom < BasicObject
-      def self.method_missing(*); end
+    module CleanRoom
+      def method_missing(*); end
+
+      def const_missing(name)
+        ::Class.new.tap do |klass|
+          klass.extend(CleanRoom)
+
+          # FIXME: How can i get class name from Class without Object namespace?
+          ::Object.const_set(name, klass)
+
+          const_set(name, klass)
+        end
+      end
     end
 
-    attr_reader :spec_file, :type, :method_name, :line
+    attr_reader :spec_file, :type, :method_name, :line, :rspec_prefix
 
-    def initialize(spec_file, type, method_name, line)
+    def initialize(spec_file, type, method_name, line, rspec_prefix: false)
       @spec_file = spec_file
       @method_name = method_name
       @type = type
       @line = line
+      @rspec_prefix = rspec_prefix
     end
 
     def name
@@ -31,7 +43,7 @@ module RSpecContext
     end
 
     def arguments
-      @arguments ||= arguments_extractor.tap { |klass| klass.class_eval(raw_body.join("\n")) }.instance_variable_get(:@__args)
+      @arguments ||= arguments_extractor.tap { |klass| klass.class_eval(raw_body.join("\n")) }.instance_variable_get(:@__args) || []
     end
 
     def range
@@ -45,7 +57,11 @@ module RSpecContext
     private
 
     def arguments_extractor
-      @arguments_extractor ||= Class.new(CleanRoom).tap do |klass|
+      @arguments_extractor ||= Class.new.tap do |klass|
+        klass.extend(CleanRoom)
+
+        klass.const_set(:RSpec, klass) if rspec_prefix
+
         klass.class_eval(<<-METHOD, __FILE__, __LINE__ + 1)
           def self.#{@method_name}(*args)
             @__args ||= args

@@ -1,15 +1,25 @@
 RSpec.describe RSpecContext::Candidate do
   describe 'InstanceMethods' do
-    let(:instance) { described_class.new(spec_file, type, method_name, line) }
+    let(:instance) { described_class.new(spec_file, type, method_name, line, rspec_prefix: rspec_prefix?) }
     let(:method_name) { 'describe' }
     let(:type) { :example_group_method }
     let(:line) { 9 }
     let(:spec_file) { RSpecContext::SpecFile.new(file_path) }
     let(:file_path) { fixtures_path.join('files/client.rb') }
+    let(:rspec_prefix?) { false }
 
     describe '#name' do
-      subject { instance.name }
-      it { is_expected.to eq('#run') }
+      context 'given 9 as line' do
+        subject { instance.name }
+        it { is_expected.to eq('#run') }
+      end
+
+      context 'given 4 as line' do
+        subject { instance.name }
+        let(:rspec_prefix?) { true }
+        let(:line) { 4 }
+        it { is_expected.to eq(LanguageServerRails::Client) }
+      end
     end
 
     describe '#cover?' do
