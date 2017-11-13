@@ -4,25 +4,6 @@ require 'ripper'
 
 module RSpecContext
   class RSpecMethod
-    # rubocop:disable Style/MethodMissing
-    module CleanRoom
-      def method_missing(*)
-        self
-      end
-
-      def const_missing(name)
-        ::Class.new.tap do |klass|
-          klass.extend(CleanRoom)
-
-          # FIXME: How can i get class name from Class without Object namespace?
-          ::Object.const_set(name, klass)
-
-          const_set(name, klass)
-        end
-      end
-    end
-    # rubocop:enable Style/MethodMissing
-
     attr_reader :spec_file, :type, :method_name, :line_no, :rspec_prefix
 
     def initialize(spec_file, type, method_name, line_no, rspec_prefix: false)
@@ -31,6 +12,9 @@ module RSpecContext
       @type = type
       @line_no = line_no
       @rspec_prefix = rspec_prefix
+
+      @broken = false
+      range # check broken file
     end
 
     def name
@@ -45,6 +29,7 @@ module RSpecContext
     end
 
     def arguments
+      return [] if broken?
       @arguments ||= arguments_extractor.tap { |klass| klass.class_eval(raw_body.join("\n")) }.instance_variable_get(:@__args) || []
     end
 
@@ -54,6 +39,10 @@ module RSpecContext
 
     def cover?(other)
       range.begin <= other.range.begin && other.range.end <= range.end
+    end
+
+    def broken?
+      @broken
     end
 
     private
@@ -76,10 +65,6 @@ module RSpecContext
       end
     end
 
-    def extract_name(_string)
-      /^\s*#{type}/
-    end
-
     def end_line_no
       current_line_no = line_no
 
@@ -88,6 +73,9 @@ module RSpecContext
         return current_line_no if RubyCompiler.can_compile?(script)
         current_line_no += 1
       end
+
+      @broken = true
+      line_no
     end
   end
 end

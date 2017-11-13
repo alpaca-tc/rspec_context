@@ -24,6 +24,31 @@ RSpec.describe RSpecContext::RSpecMethod do
       end
     end
 
+    describe '#source' do
+      subject { instance.source }
+      it { is_expected.to start_with("describe '#run' do") }
+
+      context 'given broken source' do
+        let(:line) { 46 }
+        it { is_expected.to eq("RSpec.describe '#broken' do") }
+      end
+    end
+
+    describe '#broken?' do
+      subject { instance.broken? }
+      it { is_expected.to be false }
+
+      context 'given broken source' do
+        let(:line) { 46 }
+        it { is_expected.to be true }
+      end
+    end
+
+    describe '#arguments' do
+      subject { instance.arguments }
+      it { is_expected.to eq(['#run']) }
+    end
+
     describe '#cover?' do
       subject { instance.cover?(other) }
       let(:other) { described_class.new(spec_file, type, method_name, line) }
