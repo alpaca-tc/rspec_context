@@ -10,12 +10,12 @@ module RSpecContext
       @content ||= File.read(@file_path).split("\n")
     end
 
-    def contexts
-      @contexts ||= Contexts.from_spec_file(self)
+    def nodes
+      @nodes ||= NodeBuilder.new(rspec_methods).build_nodes
     end
 
     def rspec_methods
-      @rspec_methods ||= Parser.parse_spec_file(self)
+      @rspec_methods ||= Parser.new(self).parse_spec_file
     end
 
     def inspect
