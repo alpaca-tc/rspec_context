@@ -19,7 +19,7 @@ RSpec.describe RSpecContext::RSpecMethod do
         subject { instance.name }
         let(:rspec_prefix?) { true }
         let(:line) { 4 }
-        it { is_expected.to eq(LanguageServerRails::Client) }
+        it { is_expected.to eq('LanguageServerRails::Client') }
       end
     end
 

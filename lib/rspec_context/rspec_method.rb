@@ -97,8 +97,11 @@ module RSpecContext
     end
 
     def arguments
-      return [] if broken?
-      @arguments ||= arguments_extractor.tap { |klass| klass.class_eval(raw_body.join("\n")) }.instance_variable_get(:@__args) || []
+      @arguments ||= if broken?
+                       extract_arguments_with_regexp
+                     else
+                       extract_arguments_with_parser
+                     end
     end
 
     def range
@@ -139,18 +142,31 @@ module RSpecContext
       @spec_file.content_lines[range]
     end
 
-    def arguments_extractor
-      @arguments_extractor ||= Class.new.tap do |klass|
-        klass.extend(CleanRoom)
+    def extract_arguments_with_parser
+      require 'parser/current'
+      expression = ::Parser::CurrentRuby.parse(source)
 
-        klass.const_set(:RSpec, klass) if rspec_prefix
+      nodes = [expression]
 
-        klass.class_eval(<<-METHOD, __FILE__, __LINE__ + 1)
-          def self.#{@method_name}(*args)
-            @__args ||= args
-          end
-        METHOD
+      while node = nodes.shift
+        if node.type == :send && node.children[1] == method_name.to_sym
+          arguments = node.children[2..-1]
+          return arguments.map { |argument| strip_string_literal(argument.location.expression.source) }
+        else
+          nodes += node.children
+        end
       end
+
+      []
+    end
+
+    def strip_string_literal(string)
+      string_literal = /("|')/
+      string.gsub(/^#{string_literal}/, '').gsub(/#{string_literal}$/, '')
+    end
+
+    def extract_arguments_with_regexp
+      Regexp.last_match[1].strip if /\A#{method_name}(.*?)(?:{|do)/ =~ raw_body[0].strip
     end
 
     def end_line_no
