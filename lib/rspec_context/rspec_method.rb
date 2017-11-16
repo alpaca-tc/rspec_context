@@ -132,7 +132,9 @@ module RSpecContext
         type: type,
         begin: range.begin,
         end: range.end,
-        broken: broken?
+        line_no: line_no,
+        broken: broken?,
+        source: source
       }
     end
 
